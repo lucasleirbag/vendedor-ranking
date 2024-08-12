@@ -4,9 +4,10 @@ import AddVendedorModal from '../components/AddVendedorModal';
 import UpdateQuantidadeModal from '../components/UpdateQuantidadeModal';
 import CompradoresModal from '../components/CompradoresModal';
 import SearchBar from '../components/SearchBar';
-import { Box, Button, Container } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
 import { getVendedores, deleteVendedor, addVendedor } from '../services/idbService';
 import { useAuth } from '../context/AuthContext';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 function HomePage() {
     const [vendedores, setVendedores] = useState([]);
@@ -16,7 +17,7 @@ function HomePage() {
     const [vendedorToUpdate, setVendedorToUpdate] = useState(null);
     const [vendedorToShowCompradores, setVendedorToShowCompradores] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const { logout } = useAuth(); // Adiciona função de logout
+    const { logout } = useAuth();
 
     useEffect(() => {
         loadVendedores();
@@ -59,9 +60,39 @@ function HomePage() {
         vendedor.nome.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Calcula o ranking das congregações
+    const congregacaoRanking = vendedores.reduce((acc, vendedor) => {
+        acc[vendedor.congregacao] = (acc[vendedor.congregacao] || 0) + vendedor.quantidade;
+        return acc;
+    }, {});
+
+    const congregacaoRankingSorted = Object.entries(congregacaoRanking)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+
+    const getTrophyColor = (index) => {
+        if (index === 0) return 'gold';
+        if (index === 1) return 'silver';
+        if (index === 2) return '#cd7f32'; // Bronze
+        return null;
+    };
+
     return (
         <Container maxWidth="sm" sx={{ padding: 2 }}>
             <SearchBar onSearch={setSearchQuery} />
+            <Box sx={{ display: 'flex', justifyContent: 'space-around', marginY: 2 }}>
+                {congregacaoRankingSorted.map(([congregacao, total], index) => (
+                    <Box key={congregacao} sx={{ textAlign: 'center' }}>
+                        <EmojiEventsIcon style={{ color: getTrophyColor(index), fontSize: '2rem' }} />
+                        <Typography variant="h6">
+                            {index + 1}° {congregacao}
+                        </Typography>
+                        <Typography variant="subtitle1">
+                            {total} vendas
+                        </Typography>
+                    </Box>
+                ))}
+            </Box>
             <Button
                 variant="contained"
                 color="primary"
@@ -97,7 +128,7 @@ function HomePage() {
                 color="secondary"
                 fullWidth
                 sx={{ marginTop: 2 }}
-                onClick={logout}  // Adiciona o botão de logout
+                onClick={logout}
             >
                 Sair
             </Button>

@@ -199,5 +199,22 @@ body {
         background-color: white;
         padding: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }    
+    }
+
+    /* Estilo adicional para o ranking das congregações */
+    .congregacao-ranking {
+        display: flex;
+        justify-content: space-around;
+        margin: 16px 0;
+    }
+
+    .congregacao-ranking div {
+        text-align: center;
+    }
+
+    .congregacao-ranking .MuiSvgIcon-root {
+        font-size: 2rem;
+        margin-bottom: 4px;
+    }
+
 }

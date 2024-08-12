@@ -1,3 +1,13 @@
+/* Barra de pesquisa fixada */
+.search-bar-fixed {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: white;
+    padding: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Estilos globais */
 body {
     margin: 0;
@@ -181,4 +191,13 @@ body {
         justify-content: center;
         display: flex;
     }
+
+    .search-bar-fixed {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: white;
+        padding: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }    
 }

@@ -42,12 +42,16 @@ function VendedorList({ vendedores, onUpdateQuantidade, onDelete, onShowComprado
                         <span>Quantidade Vendida: {vendedor.quantidade}</span>
                     </Box>
                     <Box className="vendedor-actions">
-                        <IconButton className="add" onClick={() => onUpdateQuantidade(vendedor)}>
-                            <AddIcon />
-                        </IconButton>
-                        <IconButton className="delete" onClick={() => onDelete(vendedor.id)}>
-                            <DeleteIcon />
-                        </IconButton>
+                        {onUpdateQuantidade && (
+                            <IconButton className="add" onClick={() => onUpdateQuantidade(vendedor)}>
+                                <AddIcon />
+                            </IconButton>
+                        )}
+                        {onDelete && (
+                            <IconButton className="delete" onClick={() => onDelete(vendedor.id)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        )}
                         <IconButton className="info" onClick={() => onShowCompradores(vendedor)}>
                             <RemoveRedEyeIcon />
                         </IconButton>

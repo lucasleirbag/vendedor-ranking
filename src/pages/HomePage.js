@@ -6,6 +6,7 @@ import CompradoresModal from '../components/CompradoresModal';
 import SearchBar from '../components/SearchBar';
 import { Box, Button, Container } from '@mui/material';
 import { getVendedores, deleteVendedor, addVendedor } from '../services/idbService';
+import { useAuth } from '../context/AuthContext';
 
 function HomePage() {
     const [vendedores, setVendedores] = useState([]);
@@ -14,6 +15,8 @@ function HomePage() {
     const [isCompradoresModalOpen, setCompradoresModalOpen] = useState(false);
     const [vendedorToUpdate, setVendedorToUpdate] = useState(null);
     const [vendedorToShowCompradores, setVendedorToShowCompradores] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const { logout } = useAuth(); // Adiciona função de logout
 
     useEffect(() => {
         loadVendedores();
@@ -52,9 +55,13 @@ function HomePage() {
         setCompradoresModalOpen(true);
     };
 
+    const filteredVendedores = vendedores.filter((vendedor) =>
+        vendedor.nome.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <Container maxWidth="sm" sx={{ padding: 2 }}>
-            <SearchBar onSearch={(query) => { /* Lógica de busca */ }} />
+            <SearchBar onSearch={setSearchQuery} />
             <Button
                 variant="contained"
                 color="primary"
@@ -65,7 +72,7 @@ function HomePage() {
                 Adicionar Vendedor
             </Button>
             <VendedorList 
-                vendedores={vendedores}
+                vendedores={filteredVendedores}
                 onUpdateQuantidade={handleUpdateQuantidade} 
                 onDelete={handleDeleteVendedor} 
                 onShowCompradores={handleShowCompradores}
@@ -85,6 +92,15 @@ function HomePage() {
                 onClose={() => setCompradoresModalOpen(false)}
                 vendedor={vendedorToShowCompradores}
             />
+            <Button
+                variant="outlined"
+                color="secondary"
+                fullWidth
+                sx={{ marginTop: 2 }}
+                onClick={logout}  // Adiciona o botão de logout
+            >
+                Sair
+            </Button>
         </Container>
     );
 }

@@ -6,29 +6,31 @@ import '../styles/styles.css';
 function UpdateQuantidadeModal({ open, onClose, vendedor }) {
     const [quantidade, setQuantidade] = useState('');
     const [comprador, setComprador] = useState('');
-    const [numeroComprador, setNumeroComprador] = useState('');
+    const [numerosComprador, setNumerosComprador] = useState('');
 
     const handleSubmit = async () => {
-        if (!quantidade || !comprador || !numeroComprador) {
+        if (!quantidade || !comprador || !numerosComprador) {
             alert('Por favor, preencha todos os campos.');
             return;
         }
-
+    
+        const numerosArray = numerosComprador ? numerosComprador.split(',').map(num => num.trim()) : [];
+    
         const vendedores = await getVendedores();
-        const numeroExistente = vendedores.some(v => v.numeroComprador === numeroComprador);
-
-        if (numeroExistente) {
-            alert('Este número de comprador já foi usado por outro vendedor.');
+        const numerosExistentes = vendedores.flatMap(v => v.compradores.flatMap(c => c.numeros || []));
+    
+        const numerosRepetidos = numerosArray.filter(num => numerosExistentes.includes(num));
+        if (numerosRepetidos.length > 0) {
+            alert(`Os números ${numerosRepetidos.join(', ')} já foram escolhidos por outro comprador.`);
             return;
         }
-
+    
         vendedor.quantidade += parseInt(quantidade);
-        vendedor.compradores.push({ nome: comprador, numero: numeroComprador });
-        vendedor.numeroComprador = numeroComprador;
-
+        vendedor.compradores.push({ nome: comprador, numeros: numerosArray });
+    
         await updateVendedor(vendedor.id, vendedor);
         onClose();
-    };
+    };    
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -52,9 +54,9 @@ function UpdateQuantidadeModal({ open, onClose, vendedor }) {
                     />
                     <TextField
                         fullWidth
-                        label="Número do Comprador"
-                        value={numeroComprador}
-                        onChange={(e) => setNumeroComprador(e.target.value)}
+                        label="Números do Comprador (separados por vírgula)"
+                        value={numerosComprador}
+                        onChange={(e) => setNumerosComprador(e.target.value)}
                         margin="dense"
                     />
                 </Box>

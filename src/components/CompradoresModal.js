@@ -10,7 +10,10 @@ function CompradoresModal({ open, onClose, vendedor }) {
                 <List className="modal-body">
                     {vendedor?.compradores.map((comprador, idx) => (
                         <ListItem key={idx}>
-                            <ListItemText primary={`${comprador.nome} - ${comprador.numero}`} />
+                            <ListItemText
+                                primary={`${comprador.nome}`}
+                                secondary={`Números: ${comprador.numeros ? comprador.numeros.join(', ') : 'Nenhum número informado'}`}
+                            />
                         </ListItem>
                     ))}
                 </List>

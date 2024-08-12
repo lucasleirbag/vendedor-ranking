@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Modal, TextField, Select, MenuItem, Typography } from '@mui/material';
+import { getVendedores } from '../services/idbService';
 import '../styles/styles.css';
 
 const congregacoes = [
@@ -14,11 +15,23 @@ function AddVendedorModal({ open, onClose, onSubmit }) {
     const [congregacao, setCongregacao] = useState('');
     const [quantidade, setQuantidade] = useState('');
     const [comprador, setComprador] = useState('');
-    const [numeroComprador, setNumeroComprador] = useState('');
+    const [numerosComprador, setNumerosComprador] = useState('');
 
-    const handleSubmit = () => {
-        if (!nome || !congregacao || !quantidade || !comprador || !numeroComprador) {
+    const handleSubmit = async () => {
+        if (!nome || !congregacao || !quantidade || !comprador || !numerosComprador) {
             alert('Por favor, preencha todos os campos.');
+            return;
+        }
+
+        const numerosArray = numerosComprador.split(',').map(num => num.trim());
+
+        const vendedores = await getVendedores();
+        const numerosExistentes = vendedores.flatMap(v => v.compradores.flatMap(c => c.numeros || []));
+
+        // Verificar se algum número já foi usado
+        const numerosRepetidos = numerosArray.filter(num => numerosExistentes.includes(num));
+        if (numerosRepetidos.length > 0) {
+            alert(`Os números ${numerosRepetidos.join(', ')} já foram escolhidos por outro comprador.`);
             return;
         }
 
@@ -26,8 +39,7 @@ function AddVendedorModal({ open, onClose, onSubmit }) {
             nome,
             congregacao,
             quantidade: parseInt(quantidade),
-            compradores: [{ nome: comprador, numero: numeroComprador }],
-            numeroComprador
+            compradores: [{ nome: comprador, numeros: numerosArray }]
         };
 
         onSubmit(novoVendedor);
@@ -74,9 +86,9 @@ function AddVendedorModal({ open, onClose, onSubmit }) {
                     />
                     <TextField
                         fullWidth
-                        label="Número do Comprador"
-                        value={numeroComprador}
-                        onChange={(e) => setNumeroComprador(e.target.value)}
+                        label="Números do Comprador (separados por vírgula)"
+                        value={numerosComprador}
+                        onChange={(e) => setNumerosComprador(e.target.value)}
                         margin="dense"
                     />
                 </Box>

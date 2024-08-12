@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import { updateVendedor, getVendedores } from '../services/idbService';
 import '../styles/styles.css';
@@ -8,29 +8,38 @@ function UpdateQuantidadeModal({ open, onClose, vendedor }) {
     const [comprador, setComprador] = useState('');
     const [numerosComprador, setNumerosComprador] = useState('');
 
+    useEffect(() => {
+        if (!open) {
+            // Limpar os campos quando o modal for fechado
+            setQuantidade('');
+            setComprador('');
+            setNumerosComprador('');
+        }
+    }, [open]);
+
     const handleSubmit = async () => {
         if (!quantidade || !comprador || !numerosComprador) {
             alert('Por favor, preencha todos os campos.');
             return;
         }
-    
-        const numerosArray = numerosComprador ? numerosComprador.split(',').map(num => num.trim()) : [];
-    
+
+        const numerosArray = numerosComprador.split(',').map(num => num.trim());
+
         const vendedores = await getVendedores();
         const numerosExistentes = vendedores.flatMap(v => v.compradores.flatMap(c => c.numeros || []));
-    
+
         const numerosRepetidos = numerosArray.filter(num => numerosExistentes.includes(num));
         if (numerosRepetidos.length > 0) {
             alert(`Os números ${numerosRepetidos.join(', ')} já foram escolhidos por outro comprador.`);
             return;
         }
-    
+
         vendedor.quantidade += parseInt(quantidade);
         vendedor.compradores.push({ nome: comprador, numeros: numerosArray });
-    
+
         await updateVendedor(vendedor.id, vendedor);
         onClose();
-    };    
+    };
 
     return (
         <Modal open={open} onClose={onClose}>

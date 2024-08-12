@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Modal, TextField, Select, MenuItem, Typography } from '@mui/material';
 import { getVendedores } from '../services/idbService';
 import '../styles/styles.css';
@@ -17,6 +17,17 @@ function AddVendedorModal({ open, onClose, onSubmit }) {
     const [comprador, setComprador] = useState('');
     const [numerosComprador, setNumerosComprador] = useState('');
 
+    useEffect(() => {
+        if (!open) {
+            // Limpar os campos quando o modal for fechado
+            setNome('');
+            setCongregacao('');
+            setQuantidade('');
+            setComprador('');
+            setNumerosComprador('');
+        }
+    }, [open]);
+
     const handleSubmit = async () => {
         if (!nome || !congregacao || !quantidade || !comprador || !numerosComprador) {
             alert('Por favor, preencha todos os campos.');
@@ -28,7 +39,6 @@ function AddVendedorModal({ open, onClose, onSubmit }) {
         const vendedores = await getVendedores();
         const numerosExistentes = vendedores.flatMap(v => v.compradores.flatMap(c => c.numeros || []));
 
-        // Verificar se algum número já foi usado
         const numerosRepetidos = numerosArray.filter(num => numerosExistentes.includes(num));
         if (numerosRepetidos.length > 0) {
             alert(`Os números ${numerosRepetidos.join(', ')} já foram escolhidos por outro comprador.`);

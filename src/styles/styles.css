@@ -5,14 +5,14 @@ body {
     background-color: #f0f0f0;
 }
 
-/* Estilos para container geral */
+/* Container geral */
 .container {
     padding: 16px;
-    max-width: 600px;
+    max-width: 100%;
     margin: auto;
 }
 
-/* Estilos para o Card */
+/* Card de vendedor */
 .vendedor-card {
     background-color: white;
     border-radius: 8px;
@@ -26,11 +26,17 @@ body {
     transform: translateY(-4px);
 }
 
-/* Título do card */
-.vendedor-card h3 {
-    margin-top: 0;
+/* Estilização do título do vendedor */
+.vendedor-title {
+    display: flex;
+    align-items: center;
     font-size: 1.2rem;
     color: #333;
+    margin-bottom: 8px;
+}
+
+.vendedor-title span {
+    font-weight: bold;
 }
 
 /* Informações do vendedor */
@@ -46,7 +52,7 @@ body {
     margin-bottom: 4px;
 }
 
-/* Botões de ação */
+/* Botões de ação no card */
 .vendedor-actions {
     display: flex;
     justify-content: space-between;
@@ -87,19 +93,25 @@ body {
     background-color: #1e88e5;
 }
 
-/* Modal styling */
+/* Estilização do Modal */
 .modal-content {
     background-color: white;
     border-radius: 8px;
     padding: 16px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
     max-width: 400px;
-    margin: auto;
+    margin: 20px auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-header {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     margin-bottom: 16px;
+    text-align: center;
+    color: #333;
 }
 
 .modal-body {
@@ -110,20 +122,16 @@ body {
 .modal-body input,
 .modal-body select {
     margin-bottom: 12px;
-    padding: 8px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
 }
 
 .modal-footer {
     display: flex;
     justify-content: flex-end;
+    margin-top: 16px;
 }
 
 .modal-footer button {
     padding: 8px 16px;
-    border: none;
     border-radius: 4px;
     font-size: 1rem;
     cursor: pointer;
@@ -161,6 +169,16 @@ body {
     }
 
     .modal-content {
+        padding: 16px;
         width: 90%;
+    }
+
+    .container {
+        padding: 8px;
+    }
+
+    .MuiPagination-root {
+        justify-content: center;
+        display: flex;
     }
 }

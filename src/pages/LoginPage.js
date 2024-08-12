@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Container, TextField, Button, Box, Typography } from '@mui/material';
+import Signature from '../components/Signature'; // Importa o componente de assinatura
 
 function LoginPage() {
     const [username, setUsername] = useState('');
@@ -13,8 +14,8 @@ function LoginPage() {
     };
 
     return (
-        <Container maxWidth="xs">
-            <Box sx={{ mt: 8 }}>
+        <Container maxWidth="xs" sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Box sx={{ mb: 'auto', mt: 8 }}>
                 <Typography variant="h4" gutterBottom>Login</Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -43,6 +44,7 @@ function LoginPage() {
                     </Button>
                 </form>
             </Box>
+            <Signature /> {/* Adiciona a assinatura fixada */}
         </Container>
     );
 }

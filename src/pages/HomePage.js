@@ -9,6 +9,7 @@ import { getVendedores, deleteVendedor, addVendedor } from '../services/idbServi
 import { useAuth } from '../context/AuthContext';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import ShareIcon from '@mui/icons-material/Share';
+import Signature from '../components/Signature'; // Importa o componente de assinatura
 
 function HomePage() {
     const [vendedores, setVendedores] = useState([]);
@@ -142,6 +143,7 @@ function HomePage() {
             >
                 Sair
             </Button>
+            <Signature /> {/* Adiciona a assinatura fixada */}
         </Container>
     );
 }

@@ -6,6 +6,7 @@ import { getVendedores } from '../services/idbService';
 import CompradoresModal from '../components/CompradoresModal';
 import ShareIcon from '@mui/icons-material/Share';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import Signature from '../components/Signature';
 
 function PublicPage() {
     const [vendedores, setVendedores] = useState([]);
@@ -36,7 +37,6 @@ function PublicPage() {
         vendedor.nome.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Calcula o ranking das congregações
     const congregacaoRanking = vendedores.reduce((acc, vendedor) => {
         acc[vendedor.congregacao] = (acc[vendedor.congregacao] || 0) + vendedor.quantidade;
         return acc;
@@ -54,17 +54,17 @@ function PublicPage() {
     };
 
     return (
-        <Container maxWidth="sm" sx={{ padding: 2 }}>
+        <Container maxWidth="sm" sx={{ padding: 2, position: 'relative', minHeight: '100vh' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                 <SearchBar onSearch={setSearchQuery} />
                 <IconButton onClick={handleCopyLink} color="primary" aria-label="compartilhar link">
                     <ShareIcon />
                 </IconButton>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-around', marginY: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginY: 2 }}>
                 {congregacaoRankingSorted.map(([congregacao, total], index) => (
-                    <Box key={congregacao} sx={{ textAlign: 'center' }}>
-                        <EmojiEventsIcon style={{ color: getTrophyColor(index), fontSize: '2rem' }} />
+                    <Box key={congregacao} sx={{ textAlign: 'center', marginX: 2 }}>
+                        <EmojiEventsIcon style={{ color: getTrophyColor(index), fontSize: '3rem' }} />
                         <Typography variant="h6">
                             {index + 1}° {congregacao}
                         </Typography>
@@ -87,6 +87,7 @@ function PublicPage() {
                     vendedor={selectedVendedor} 
                 />
             )}
+            <Signature /> {/* Adiciona a assinatura fixada */}
         </Container>
     );
 }

@@ -4,10 +4,11 @@ import AddVendedorModal from '../components/AddVendedorModal';
 import UpdateQuantidadeModal from '../components/UpdateQuantidadeModal';
 import CompradoresModal from '../components/CompradoresModal';
 import SearchBar from '../components/SearchBar';
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography, IconButton } from '@mui/material';
 import { getVendedores, deleteVendedor, addVendedor } from '../services/idbService';
 import { useAuth } from '../context/AuthContext';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import ShareIcon from '@mui/icons-material/Share';
 
 function HomePage() {
     const [vendedores, setVendedores] = useState([]);
@@ -56,11 +57,17 @@ function HomePage() {
         setCompradoresModalOpen(true);
     };
 
+    const handleCopyLink = () => {
+        const publicUrl = `${window.location.origin}/public`;
+        navigator.clipboard.writeText(publicUrl).then(() => {
+            alert('Link copiado para a área de transferência!');
+        });
+    };
+
     const filteredVendedores = vendedores.filter((vendedor) =>
         vendedor.nome.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Calcula o ranking das congregações
     const congregacaoRanking = vendedores.reduce((acc, vendedor) => {
         acc[vendedor.congregacao] = (acc[vendedor.congregacao] || 0) + vendedor.quantidade;
         return acc;
@@ -93,15 +100,18 @@ function HomePage() {
                     </Box>
                 ))}
             </Box>
-            <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{ marginTop: 2, marginBottom: 2 }}
-                onClick={handleAddVendedor}
-            >
-                Adicionar Vendedor
-            </Button>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAddVendedor}
+                >
+                    Adicionar Vendedor
+                </Button>
+                <IconButton onClick={handleCopyLink} color="primary" aria-label="compartilhar link">
+                    <ShareIcon />
+                </IconButton>
+            </Box>
             <VendedorList 
                 vendedores={filteredVendedores}
                 onUpdateQuantidade={handleUpdateQuantidade} 

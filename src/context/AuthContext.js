@@ -8,7 +8,10 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const login = (username, password) => {
-        if (username === 'admin' && password === 'admin') {
+        const adminUsername = process.env.REACT_APP_ADMIN_USERNAME;
+        const adminPassword = process.env.REACT_APP_ADMIN_PASSWORD;
+
+        if (username === adminUsername && password === adminPassword) {
             setUser({ username, role: 'admin' });
             navigate('/');
         } else {

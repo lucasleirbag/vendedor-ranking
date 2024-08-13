@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Container, TextField, Button, Box, Typography } from '@mui/material';
 import Signature from '../components/Signature'; // Importa o componente de assinatura
+import TestEnvVariables from '../components/TestEnvVariables'; // Importe o componente de teste
 
 function LoginPage() {
     const [username, setUsername] = useState('');
@@ -44,6 +45,10 @@ function LoginPage() {
                     </Button>
                 </form>
             </Box>
+
+            {/* Adicione o componente de teste das variáveis de ambiente */}
+            <TestEnvVariables />
+
             <Signature /> {/* Adiciona a assinatura fixada */}
         </Container>
     );

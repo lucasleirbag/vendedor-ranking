@@ -29,9 +29,12 @@ function HomePage() {
 
     const loadVendedores = async () => {
         const data = await getVendedores();
-        setVendedores(data);
+        // Ordena os vendedores por quantidade de vendas em ordem decrescente
+        const sortedVendedores = data.sort((a, b) => b.quantidade - a.quantidade);
+        setVendedores(sortedVendedores);
     };
 
+    // Outras funções e JSX permanecem os mesmos...
     const handleAddVendedor = () => setAddModalOpen(true);
 
     const handleUpdateQuantidade = (vendedor) => {

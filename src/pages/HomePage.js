@@ -3,6 +3,7 @@ import VendedorList from '../components/VendedorList';
 import AddVendedorModal from '../components/AddVendedorModal';
 import UpdateQuantidadeModal from '../components/UpdateQuantidadeModal';
 import CompradoresModal from '../components/CompradoresModal';
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal'; // Importa o modal de confirmação
 import SearchBar from '../components/SearchBar';
 import { Box, Button, Container, Typography, IconButton } from '@mui/material';
 import { getVendedores, deleteVendedor, addVendedor, updateVendedorQuantidade } from '../services/firestoreService';
@@ -16,8 +17,10 @@ function HomePage() {
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [isCompradoresModalOpen, setCompradoresModalOpen] = useState(false);
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false); // Estado para o modal de confirmação
     const [vendedorToUpdate, setVendedorToUpdate] = useState(null);
     const [vendedorToShowCompradores, setVendedorToShowCompradores] = useState(null);
+    const [vendedorToDelete, setVendedorToDelete] = useState(null); // Vendedor a ser deletado
     const [searchQuery, setSearchQuery] = useState('');
     const { logout } = useAuth();
 
@@ -37,9 +40,15 @@ function HomePage() {
         setUpdateModalOpen(true);
     };
 
-    const handleDeleteVendedor = async (vendedorId) => {
-        await deleteVendedor(vendedorId);
+    const handleDeleteVendedor = (vendedorId) => {
+        setVendedorToDelete(vendedorId);
+        setDeleteModalOpen(true); // Abre o modal de confirmação
+    };
+
+    const confirmDeleteVendedor = async () => {
+        await deleteVendedor(vendedorToDelete);
         loadVendedores();
+        setDeleteModalOpen(false); // Fecha o modal após a exclusão
     };
 
     const handleAddVendedorSubmit = async (novoVendedor) => {
@@ -135,6 +144,11 @@ function HomePage() {
                 open={isCompradoresModalOpen}
                 onClose={() => setCompradoresModalOpen(false)}
                 vendedor={vendedorToShowCompradores}
+            />
+            <ConfirmDeleteModal
+                open={isDeleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                onConfirm={confirmDeleteVendedor}
             />
             <Button
                 variant="outlined"

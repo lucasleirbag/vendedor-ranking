@@ -29,27 +29,30 @@ function AddVendedorModal({ open, onClose, onSubmit }) {
     }, [open]);
 
     const handleSubmit = async () => {
-        if (!nome || !congregacao || !quantidade || !comprador || !numerosComprador) {
-            alert('Por favor, preencha todos os campos.');
+        if (!nome || !congregacao || !quantidade) {
+            alert('Por favor, preencha os campos obrigatórios: Nome, Congregação e Quantidade.');
             return;
         }
 
-        const numerosArray = numerosComprador.split(',').map(num => num.trim());
+        let numerosArray = [];
+        if (numerosComprador) {
+            numerosArray = numerosComprador.split(',').map(num => num.trim());
 
-        const vendedores = await getVendedores();
-        const numerosExistentes = vendedores.flatMap(v => v.compradores.flatMap(c => c.numeros || []));
+            const vendedores = await getVendedores();
+            const numerosExistentes = vendedores.flatMap(v => v.compradores.flatMap(c => c.numeros || []));
 
-        const numerosRepetidos = numerosArray.filter(num => numerosExistentes.includes(num));
-        if (numerosRepetidos.length > 0) {
-            alert(`Os números ${numerosRepetidos.join(', ')} já foram escolhidos por outro comprador.`);
-            return;
+            const numerosRepetidos = numerosArray.filter(num => numerosExistentes.includes(num));
+            if (numerosRepetidos.length > 0) {
+                alert(`Os números ${numerosRepetidos.join(', ')} já foram escolhidos por outro comprador.`);
+                return;
+            }
         }
 
         const novoVendedor = {
             nome,
             congregacao,
             quantidade: parseInt(quantidade),
-            compradores: [{ nome: comprador, numeros: numerosArray }]
+            compradores: comprador ? [{ nome: comprador, numeros: numerosArray }] : [] // Adiciona comprador somente se preenchido
         };
 
         onSubmit(novoVendedor);
@@ -89,14 +92,14 @@ function AddVendedorModal({ open, onClose, onSubmit }) {
                     />
                     <TextField
                         fullWidth
-                        label="Nome do Comprador"
+                        label="Nome do Comprador (Opcional)"
                         value={comprador}
                         onChange={(e) => setComprador(e.target.value)}
                         margin="dense"
                     />
                     <TextField
                         fullWidth
-                        label="Números do Comprador (separados por vírgula)"
+                        label="Números do Comprador (Opcional, separados por vírgula)"
                         value={numerosComprador}
                         onChange={(e) => setNumerosComprador(e.target.value)}
                         margin="dense"

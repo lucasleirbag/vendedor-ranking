@@ -1,6 +1,5 @@
 // src/context/AuthContext.js
 import React, { createContext, useContext, useState } from 'react';
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 
@@ -15,7 +14,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 
 const AuthContext = createContext();
 
@@ -26,34 +24,19 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const login = async (inputUsername, inputPassword) => {
-        let email;
-        let password;
+        const username = process.env.REACT_APP_PROD_USER;
+        const password = process.env.REACT_APP_PROD_PASSWORD;
 
-        if (process.env.NODE_ENV === 'development') {
-            // Modo de desenvolvimento: verifica se as credenciais de desenvolvimento são válidas
-            if (inputUsername === 'admin' && inputPassword === 'admin') {
-                setUser({ displayName: 'admin' });
-                navigate('/'); // Redirecionar para a home após login bem-sucedido
-            } else {
-                console.error("Credenciais de desenvolvimento inválidas.");
-            }
+        if (inputUsername === username && inputPassword === password) {
+            setUser({ displayName: inputUsername });
+            navigate('/'); // Redirecionar para a home após login bem-sucedido
         } else {
-            // Modo de produção: usa autenticação Firebase com email e senha
-            email = process.env.REACT_APP_PROD_USER;
-            password = process.env.REACT_APP_PROD_PASSWORD;
-
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                setUser(userCredential.user);
-                navigate('/'); // Redirecionar para a home após login bem-sucedido
-            } catch (error) {
-                console.error("Erro ao fazer login:", error.message);
-            }
+            console.error("Credenciais inválidas.");
+            alert("Credenciais inválidas.");
         }
     };
 
     const logout = () => {
-        auth.signOut();
         setUser(null);
         navigate('/login'); // Redirecionar para a página de login após logout
     };

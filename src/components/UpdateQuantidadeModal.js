@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import { updateVendedor, getVendedores } from '../services/idbService';
+import { updateVendedor, getVendedores } from '../services/firestoreService'; // Certifique-se de usar o firestoreService
 import '../styles/styles.css';
 
-function UpdateQuantidadeModal({ open, onClose, vendedor }) {
+function UpdateQuantidadeModal({ open, onClose, vendedor, onSubmit }) {
     const [quantidade, setQuantidade] = useState('');
     const [comprador, setComprador] = useState('');
     const [numerosComprador, setNumerosComprador] = useState('');
@@ -34,10 +34,15 @@ function UpdateQuantidadeModal({ open, onClose, vendedor }) {
             return;
         }
 
-        vendedor.quantidade += parseInt(quantidade);
-        vendedor.compradores.push({ nome: comprador, numeros: numerosArray });
+        // Atualiza a quantidade e adiciona o novo comprador
+        const updatedVendedor = {
+            ...vendedor,
+            quantidade: vendedor.quantidade + parseInt(quantidade),
+            compradores: [...vendedor.compradores, { nome: comprador, numeros: numerosArray }]
+        };
 
-        await updateVendedor(vendedor.id, vendedor);
+        await updateVendedor(vendedor.id, updatedVendedor);
+        onSubmit();
         onClose();
     };
 

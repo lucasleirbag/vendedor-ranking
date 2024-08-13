@@ -1,0 +1,22 @@
+{
+    "rewrites": [
+      {
+        "source": "/public",
+        "destination": "/public/index.html"
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "/public",
+        "statusCode": 301
+      }
+    ],
+    "routes": [
+      {
+        "src": "^/public(.*)",
+        "dest": "/public$1"
+      }
+    ]
+  }
+  

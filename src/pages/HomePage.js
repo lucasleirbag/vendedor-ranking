@@ -5,11 +5,11 @@ import UpdateQuantidadeModal from '../components/UpdateQuantidadeModal';
 import CompradoresModal from '../components/CompradoresModal';
 import SearchBar from '../components/SearchBar';
 import { Box, Button, Container, Typography, IconButton } from '@mui/material';
-import { getVendedores, deleteVendedor, addVendedor } from '../services/idbService';
+import { getVendedores, deleteVendedor, addVendedor, updateVendedorQuantidade } from '../services/firestoreService';
 import { useAuth } from '../context/AuthContext';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import ShareIcon from '@mui/icons-material/Share';
-import Signature from '../components/Signature'; // Importa o componente de assinatura
+import Signature from '../components/Signature';
 
 function HomePage() {
     const [vendedores, setVendedores] = useState([]);
@@ -38,19 +38,20 @@ function HomePage() {
     };
 
     const handleDeleteVendedor = async (vendedorId) => {
-        const senha = prompt('Digite a senha para excluir o vendedor:');
-        if (senha === 'senhaCorreta') {
-            await deleteVendedor(vendedorId);
-            loadVendedores(); // Recarregar a lista após a exclusão
-        } else {
-            alert('Senha incorreta!');
-        }
+        await deleteVendedor(vendedorId);
+        loadVendedores();
     };
 
     const handleAddVendedorSubmit = async (novoVendedor) => {
         await addVendedor(novoVendedor);
-        loadVendedores(); // Recarregar a lista após adicionar um novo vendedor
-        setAddModalOpen(false); // Fechar o modal após a adição
+        loadVendedores();
+        setAddModalOpen(false);
+    };
+
+    const handleUpdateQuantidadeSubmit = async (id, novaQuantidade) => {
+        await updateVendedorQuantidade(id, novaQuantidade);
+        loadVendedores();
+        setUpdateModalOpen(false);
     };
 
     const handleShowCompradores = (vendedor) => {
@@ -128,6 +129,7 @@ function HomePage() {
                 open={isUpdateModalOpen} 
                 onClose={() => setUpdateModalOpen(false)} 
                 vendedor={vendedorToUpdate} 
+                onSubmit={handleUpdateQuantidadeSubmit}
             />
             <CompradoresModal
                 open={isCompradoresModalOpen}

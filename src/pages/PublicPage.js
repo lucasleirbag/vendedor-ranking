@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import VendedorList from '../components/VendedorList';
 import SearchBar from '../components/SearchBar';
 import { Box, Container, Typography, IconButton } from '@mui/material';
-import { getVendedores } from '../services/idbService';
+import { getVendedores } from '../services/firestoreService';
 import CompradoresModal from '../components/CompradoresModal';
 import ShareIcon from '@mui/icons-material/Share';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';

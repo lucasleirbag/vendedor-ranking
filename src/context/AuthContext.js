@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
-    const login = async (inputUsername, inputPassword) => {
+    const login = (inputUsername, inputPassword) => {
         const username = process.env.REACT_APP_PROD_USER;
         const password = process.env.REACT_APP_PROD_PASSWORD;
 

@@ -33,9 +33,12 @@ function PublicPage() {
         });
     };
 
-    const filteredVendedores = vendedores.filter((vendedor) =>
-        vendedor.nome.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // Filtragem e ordenação dos vendedores por quantidade
+    const filteredVendedores = vendedores
+        .filter((vendedor) =>
+            vendedor.nome.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .sort((a, b) => b.quantidade - a.quantidade); // Ordena por quantidade de vendas
 
     const congregacaoRanking = vendedores.reduce((acc, vendedor) => {
         acc[vendedor.congregacao] = (acc[vendedor.congregacao] || 0) + vendedor.quantidade;
@@ -87,7 +90,7 @@ function PublicPage() {
                     vendedor={selectedVendedor} 
                 />
             )}
-            <Signature /> {/* Adiciona a assinatura fixada */}
+            <Signature />
         </Container>
     );
 }

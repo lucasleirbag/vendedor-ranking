@@ -19,8 +19,8 @@ export const AuthProvider = ({ children }) => {
         if (inputUsername === username && inputPassword === password) {
             const loggedInUser = { displayName: inputUsername };
             setUser(loggedInUser);
-            localStorage.setItem('user', JSON.stringify(loggedInUser)); // Armazena o usuário no localStorage
-            navigate('/'); // Redirecionar para a home após login bem-sucedido
+            localStorage.setItem('user', JSON.stringify(loggedInUser));
+            navigate('/'); 
         } else {
             console.error("Credenciais inválidas.");
             alert("Credenciais inválidas.");
@@ -29,15 +29,16 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem('user'); // Remove o usuário do localStorage
-        navigate('/login'); // Redirecionar para a página de login após logout
+        localStorage.removeItem('user');
+        navigate('/login');
     };
 
     useEffect(() => {
-        if (!user) {
+        const unprotectedRoutes = ['/login', '/public'];
+        if (!user && !unprotectedRoutes.includes(window.location.pathname)) {
             navigate('/login');
         }
-    }, [user, navigate]);
+    }, [user, navigate]);    
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>

@@ -3,12 +3,13 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import PublicPage from './pages/PublicPage';
-import { AuthProvider, useAuth } from './context/AuthContext'; // Certifique-se de que o useAuth está sendo importado
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { CssBaseline } from '@mui/material';
 import './styles/styles.css';
 
+// Define a rota privada
 function PrivateRoute({ children }) {
-    const { user } = useAuth(); // useAuth deve ser importado corretamente para funcionar
+    const { user } = useAuth();
     return user ? children : <Navigate to="/login" />;
 }
 
@@ -18,8 +19,13 @@ function App() {
             <AuthProvider>
                 <CssBaseline />
                 <Routes>
+                    {/* Rota pública, não requer autenticação */}
+                    <Route path="/public" element={<PublicPage />} /> 
+                    
+                    {/* Rota de login */}
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/public" element={<PublicPage />} />
+                    
+                    {/* Rota privada, requer autenticação */}
                     <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
                 </Routes>
             </AuthProvider>

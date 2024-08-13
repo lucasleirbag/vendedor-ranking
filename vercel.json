@@ -9,13 +9,8 @@
         "destination": "/index.html"
       },
       {
-        "source": "/home",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/(.*)",
+        "source": "/",
         "destination": "/index.html"
       }
     ]
-  }
-  
+}

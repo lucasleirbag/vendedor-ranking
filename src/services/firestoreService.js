@@ -1,7 +1,7 @@
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
-// Função para obter todos os vendedores
+// Função para obter todos os vendedores uma vez
 export const getVendedores = async () => {
     const querySnapshot = await getDocs(collection(db, "vendedores"));
     const vendedores = [];
@@ -34,4 +34,19 @@ export const updateVendedor = async (id, updatedFields) => {
 export const deleteVendedor = async (id) => {
     const vendedorRef = doc(db, "vendedores", id);
     await deleteDoc(vendedorRef);
+};
+
+// Função para obter vendedores em tempo real e ordená-los por quantidade de vendas
+export const getVendedoresRealtime = (callback) => {
+    const unsubscribe = onSnapshot(collection(db, "vendedores"), (snapshot) => {
+        const vendedores = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        // Ordena por quantidade de vendas de forma decrescente
+        vendedores.sort((a, b) => b.quantidade - a.quantidade);
+        callback(vendedores);
+    });
+    
+    return unsubscribe; // Retorna a função para cancelar a inscrição (unsubscribing)
 };

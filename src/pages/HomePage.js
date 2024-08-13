@@ -5,7 +5,7 @@ import UpdateQuantidadeModal from '../components/UpdateQuantidadeModal';
 import CompradoresModal from '../components/CompradoresModal';
 import SearchBar from '../components/SearchBar';
 import { Box, Button, Container, Typography, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { getVendedores, deleteVendedor, addVendedor, updateVendedorQuantidade } from '../services/firestoreService';
+import { getVendedoresRealtime, deleteVendedor, addVendedor, updateVendedorQuantidade } from '../services/firestoreService';
 import { useAuth } from '../context/AuthContext';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import ShareIcon from '@mui/icons-material/Share';
@@ -24,17 +24,14 @@ function HomePage() {
     const { logout } = useAuth();
 
     useEffect(() => {
-        loadVendedores();
+        const unsubscribe = getVendedoresRealtime((data) => {
+            setVendedores(data);
+        });
+
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
     }, []);
 
-    const loadVendedores = async () => {
-        const data = await getVendedores();
-        // Ordena os vendedores por quantidade de vendas em ordem decrescente
-        const sortedVendedores = data.sort((a, b) => b.quantidade - a.quantidade);
-        setVendedores(sortedVendedores);
-    };
-
-    // Outras funções e JSX permanecem os mesmos...
     const handleAddVendedor = () => setAddModalOpen(true);
 
     const handleUpdateQuantidade = (vendedor) => {
@@ -49,19 +46,16 @@ function HomePage() {
 
     const handleDeleteVendedor = async () => {
         await deleteVendedor(vendedorToDelete);
-        loadVendedores();
         setConfirmDialogOpen(false);
     };
 
     const handleAddVendedorSubmit = async (novoVendedor) => {
         await addVendedor(novoVendedor);
-        loadVendedores();
         setAddModalOpen(false);
     };
 
     const handleUpdateQuantidadeSubmit = async (id, novaQuantidade) => {
         await updateVendedorQuantidade(id, novaQuantidade);
-        loadVendedores();
         setUpdateModalOpen(false);
     };
 

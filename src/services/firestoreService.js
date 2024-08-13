@@ -17,10 +17,16 @@ export const addVendedor = async (vendedor) => {
 };
 
 // Função para atualizar a quantidade de um vendedor
-export const updateVendedorQuantidade = async (id, novaQuantidade) => {
+export const updateVendedorQuantidade = async (id, novaQuantidade, comprador, numerosComprador) => {
+    if (!id || !novaQuantidade) {
+        throw new Error("ID ou quantidade inválidos");
+    }
+
     const vendedorRef = doc(db, "vendedores", id);
+    
     await updateDoc(vendedorRef, {
-        quantidade: novaQuantidade
+        quantidade: novaQuantidade,
+        compradores: comprador ? [{ nome: comprador, numeros: numerosComprador }] : [] // Adiciona comprador somente se preenchido
     });
 };
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import { updateVendedor, getVendedores } from '../services/firestoreService'; // Certifique-se de usar o firestoreService
+import { updateVendedor, getVendedores } from '../services/firestoreService';
 import '../styles/styles.css';
 
-function UpdateQuantidadeModal({ open, onClose, vendedor, onSubmit }) {
+function UpdateQuantidadeModal({ open, onClose, vendedor }) {
     const [quantidade, setQuantidade] = useState('');
     const [comprador, setComprador] = useState('');
     const [numerosComprador, setNumerosComprador] = useState('');
@@ -18,13 +18,21 @@ function UpdateQuantidadeModal({ open, onClose, vendedor, onSubmit }) {
     }, [open]);
 
     const handleSubmit = async () => {
-        if (!quantidade || !comprador || !numerosComprador) {
+        // Verifique se a quantidade é válida (não vazia e número)
+        if (!quantidade || isNaN(quantidade)) {
+            alert('Por favor, insira uma quantidade válida.');
+            return;
+        }
+
+        // Verifique se o comprador e os números são válidos (opcional)
+        if (!comprador || !numerosComprador) {
             alert('Por favor, preencha todos os campos.');
             return;
         }
 
         const numerosArray = numerosComprador.split(',').map(num => num.trim());
 
+        // Verificação de números repetidos
         const vendedores = await getVendedores();
         const numerosExistentes = vendedores.flatMap(v => v.compradores.flatMap(c => c.numeros || []));
 
@@ -34,16 +42,23 @@ function UpdateQuantidadeModal({ open, onClose, vendedor, onSubmit }) {
             return;
         }
 
-        // Atualiza a quantidade e adiciona o novo comprador
-        const updatedVendedor = {
-            ...vendedor,
-            quantidade: vendedor.quantidade + parseInt(quantidade),
-            compradores: [...vendedor.compradores, { nome: comprador, numeros: numerosArray }]
-        };
+        // Atualizar o vendedor
+        try {
+            const updatedVendedor = {
+                ...vendedor,
+                quantidade: vendedor.quantidade + parseInt(quantidade, 10),
+                compradores: [
+                    ...vendedor.compradores,
+                    { nome: comprador, numeros: numerosArray }
+                ]
+            };
 
-        await updateVendedor(vendedor.id, updatedVendedor);
-        onSubmit();
-        onClose();
+            await updateVendedor(vendedor.id, updatedVendedor);
+            onClose(); // Fechar o modal após a atualização
+        } catch (error) {
+            console.error("Erro ao atualizar o vendedor:", error);
+            alert("Erro ao atualizar o vendedor. Tente novamente.");
+        }
     };
 
     return (

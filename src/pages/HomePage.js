@@ -3,9 +3,8 @@ import VendedorList from '../components/VendedorList';
 import AddVendedorModal from '../components/AddVendedorModal';
 import UpdateQuantidadeModal from '../components/UpdateQuantidadeModal';
 import CompradoresModal from '../components/CompradoresModal';
-import ConfirmDeleteModal from '../components/ConfirmDeleteModal'; // Importa o modal de confirmação
 import SearchBar from '../components/SearchBar';
-import { Box, Button, Container, Typography, IconButton } from '@mui/material';
+import { Box, Button, Container, Typography, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { getVendedores, deleteVendedor, addVendedor, updateVendedorQuantidade } from '../services/firestoreService';
 import { useAuth } from '../context/AuthContext';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -17,11 +16,11 @@ function HomePage() {
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [isCompradoresModalOpen, setCompradoresModalOpen] = useState(false);
-    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false); // Estado para o modal de confirmação
     const [vendedorToUpdate, setVendedorToUpdate] = useState(null);
     const [vendedorToShowCompradores, setVendedorToShowCompradores] = useState(null);
-    const [vendedorToDelete, setVendedorToDelete] = useState(null); // Vendedor a ser deletado
     const [searchQuery, setSearchQuery] = useState('');
+    const [isConfirmDialogOpen, setConfirmDialogOpen] = useState(false);
+    const [vendedorToDelete, setVendedorToDelete] = useState(null);
     const { logout } = useAuth();
 
     useEffect(() => {
@@ -40,15 +39,15 @@ function HomePage() {
         setUpdateModalOpen(true);
     };
 
-    const handleDeleteVendedor = (vendedorId) => {
+    const handleConfirmDeleteVendedor = (vendedorId) => {
         setVendedorToDelete(vendedorId);
-        setDeleteModalOpen(true); // Abre o modal de confirmação
+        setConfirmDialogOpen(true);
     };
 
-    const confirmDeleteVendedor = async () => {
+    const handleDeleteVendedor = async () => {
         await deleteVendedor(vendedorToDelete);
         loadVendedores();
-        setDeleteModalOpen(false); // Fecha o modal após a exclusão
+        setConfirmDialogOpen(false);
     };
 
     const handleAddVendedorSubmit = async (novoVendedor) => {
@@ -126,7 +125,7 @@ function HomePage() {
             <VendedorList 
                 vendedores={filteredVendedores}
                 onUpdateQuantidade={handleUpdateQuantidade} 
-                onDelete={handleDeleteVendedor} 
+                onDelete={handleConfirmDeleteVendedor} // Chama o modal de confirmação
                 onShowCompradores={handleShowCompradores}
             />
             <AddVendedorModal 
@@ -145,11 +144,25 @@ function HomePage() {
                 onClose={() => setCompradoresModalOpen(false)}
                 vendedor={vendedorToShowCompradores}
             />
-            <ConfirmDeleteModal
-                open={isDeleteModalOpen}
-                onClose={() => setDeleteModalOpen(false)}
-                onConfirm={confirmDeleteVendedor}
-            />
+            <Dialog
+                open={isConfirmDialogOpen}
+                onClose={() => setConfirmDialogOpen(false)}
+            >
+                <DialogTitle>Confirmar Exclusão</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Tem certeza que deseja excluir este vendedor? Esta ação não pode ser desfeita.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setConfirmDialogOpen(false)} color="primary">
+                        Cancelar
+                    </Button>
+                    <Button onClick={handleDeleteVendedor} color="secondary">
+                        Excluir
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Button
                 variant="outlined"
                 color="secondary"

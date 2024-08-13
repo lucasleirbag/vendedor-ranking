@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Modal, TextField, Select, MenuItem, Typography } from '@mui/material';
-import { getVendedores } from '../services/idbService';
 import '../styles/styles.css';
 
 const congregacoes = [
@@ -38,14 +37,7 @@ function AddVendedorModal({ open, onClose, onSubmit }) {
         if (numerosComprador) {
             numerosArray = numerosComprador.split(',').map(num => num.trim());
 
-            const vendedores = await getVendedores();
-            const numerosExistentes = vendedores.flatMap(v => v.compradores.flatMap(c => c.numeros || []));
-
-            const numerosRepetidos = numerosArray.filter(num => numerosExistentes.includes(num));
-            if (numerosRepetidos.length > 0) {
-                alert(`Os números ${numerosRepetidos.join(', ')} já foram escolhidos por outro comprador.`);
-                return;
-            }
+            // Lógica para verificar números repetidos
         }
 
         const novoVendedor = {

@@ -14,7 +14,7 @@ function Signature() {
             }}
         >
             <Typography variant="body2" color="textSecondary">
-                Desenvolvido por Lucas Gabriel - Todos os direitos reservados.
+                Umadeb Setor 09 - Todos os direitos reservados.
             </Typography>
         </Box>
     );

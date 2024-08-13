@@ -2,20 +2,15 @@
     "rewrites": [
       {
         "source": "/public",
-        "destination": "/public/index.html"
-      }
-    ],
-    "redirects": [
+        "destination": "/index.html"
+      },
       {
-        "source": "/",
-        "destination": "/public",
-        "statusCode": 301
-      }
-    ],
-    "routes": [
+        "source": "/login",
+        "destination": "/index.html"
+      },
       {
-        "src": "^/public(.*)",
-        "dest": "/public$1"
+        "source": "/(.*)",
+        "destination": "/index.html"
       }
     ]
   }
